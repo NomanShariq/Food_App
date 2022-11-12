@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:myfood_app/widgets/button.dart';
 import 'package:myfood_app/widgets/email_text_formfield.dart';
 import 'package:myfood_app/widgets/pass_textform_field.dart';
@@ -14,7 +16,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool isEdit = false;
   bool isMale = false;
-  
+
   static String p =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
@@ -26,6 +28,15 @@ class _ProfileState extends State<Profile> {
     TextEditingController address = TextEditingController();
     TextEditingController phoneNumber = TextEditingController();
     TextEditingController passwordcontroller = TextEditingController();
+    File image;
+    Future<void> getImage({required ImageSource imageSource}) async {
+      PickedFile pickedFile =
+          await ImagePicker().pickImage(source: imageSource) as PickedFile;
+      if (pickedFile != null) {
+        image = File(pickedFile.path);
+      }
+    }
+
     void vaildation() {
       if (emailcontroller.text.isEmpty &&
           passwordcontroller.text.isEmpty &&
@@ -104,6 +115,38 @@ class _ProfileState extends State<Profile> {
           ),
         );
       }
+    }
+
+    Future<void> myDialogueBox() {
+      return showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.camera),
+                      title: Text("Camera"),
+                      onTap: () {
+                        getImage(imageSource: ImageSource.camera);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.browse_gallery),
+                      title: Text("Gallery"),
+                      onTap: () {
+                        getImage(imageSource: ImageSource.gallery);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
     }
 
     Widget _buildAllFormFields() {
@@ -270,20 +313,24 @@ class _ProfileState extends State<Profile> {
               ),
             ],
           ),
-          Positioned(
-            top: 180,
-            left: 238,
-            child: CircleAvatar(
-              maxRadius: 18,
-              child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.edit,
-                    color: Colors.black,
-                  )),
-              backgroundColor: Colors.white,
-            ),
-          ),
+          isEdit != false
+              ? Positioned(
+                  top: 180,
+                  left: 238,
+                  child: CircleAvatar(
+                    maxRadius: 18,
+                    child: IconButton(
+                        onPressed: () {
+                          myDialogueBox();
+                        },
+                        icon: const Icon(
+                          Icons.edit,
+                          color: Colors.black,
+                        )),
+                    backgroundColor: Colors.white,
+                  ),
+                )
+              : Container(),
         ]),
       ),
     );

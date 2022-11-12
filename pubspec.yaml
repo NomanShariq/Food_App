@@ -43,6 +43,7 @@ dependencies:
   firebase_auth: ^4.1.0
   carousel_slider: ^4.1.1
   carousel_pro: ^1.0.0
+  image_picker: ^0.8.6
 dev_dependencies:
   flutter_test:
     sdk: flutter

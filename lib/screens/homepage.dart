@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:myfood_app/provider/my_provider.dart';
 import 'package:myfood_app/screens/aboutus.dart';
 import 'package:myfood_app/screens/contact.dart';
 import 'package:myfood_app/screens/profile.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   Widget _buildSingleFeature(
       {String? title,
       String? subtitle,
@@ -69,7 +76,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
       CircleAvatar(
-        maxRadius: 60,
+        maxRadius: 70,
         backgroundColor: Colors.transparent,
         backgroundImage: AssetImage("images/$image.png"),
       ),
@@ -101,7 +108,7 @@ class HomePage extends StatelessWidget {
                     height: 80,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("images/$image.png"),
+                        image: NetworkImage(image!),
                       ),
                     ),
                   ),
@@ -163,27 +170,30 @@ class HomePage extends StatelessWidget {
                   child: Row(
                     children: [
                       const CircleAvatar(
-                        maxRadius: 43,
+                        maxRadius: 50,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
-                          maxRadius: 38,
+                          maxRadius: 45,
                           backgroundImage: AssetImage("images/profile1.jpg"),
                         ),
                       ),
+                      SizedBox(
+                        width: 20,
+                      ),
                       Container(
-                        height: 80,
-                        width: 180,
+                        height: 50,
+                        width: 250,
                         child: const ListTile(
                           title: Text(
                             "Have you upset",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 23, fontWeight: FontWeight.bold),
                           ),
                           textColor: Colors.white,
                           subtitle: Text(
                             "Stomach?",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 23, fontWeight: FontWeight.bold),
                           ),
                         ),
                       )
@@ -211,8 +221,8 @@ class HomePage extends StatelessWidget {
               child: Row(
                 children: [
                   _buildSingleFeature(
-                      image: "pizza",
-                      title: "Pizza",
+                      image: "Biryani",
+                      title: "Biryani",
                       ratings: "4.5",
                       subtitle: "7 Ocean Hotel",
                       price: "40"),
@@ -223,10 +233,10 @@ class HomePage extends StatelessWidget {
                       subtitle: "5 Star Hotel",
                       price: "150"),
                   _buildSingleFeature(
-                      image: "salad",
-                      title: "Salad",
+                      image: "steak",
+                      title: "Steak",
                       ratings: "4.9",
-                      subtitle: "Jadah Salad Bar",
+                      subtitle: "Jadah Steak Bar",
                       price: "89"),
                 ],
               ),
@@ -238,6 +248,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBottomPart() {
+    MyProvider myProvider = MyProvider();
     return Expanded(
         flex: 2,
         child: Container(
@@ -252,21 +263,17 @@ class HomePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Container(
-                          height: 240,
-                          child: Row(
-                            children: [
-                              _buildSingleCategory(
-                                  image: "pizza", name: "Pizza"),
-                              _buildSingleCategory(
-                                  image: "salad", name: "Salad"),
-                              _buildSingleCategory(
-                                  image: "burger", name: "Burger"),
-                            ],
-                          ),
-                        ),
+                       Container(
+                        height: 240,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: myProvider.getCategoryModelList.length,
+                            itemBuilder: (context, index) =>
+                                _buildSingleCategory(
+                                    name: myProvider
+                                        .getCategoryModelList[index].name,
+                                    image: myProvider
+                                        .getCategoryModelList[index].image)),
                       ),
                     ]),
               ),
@@ -351,8 +358,11 @@ class HomePage extends StatelessWidget {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldstate = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
+    final myProvider = Provider.of<MyProvider>(context);
+    myProvider.getCategoryProduct();
     return Scaffold(
       key: _scaffoldstate,
       drawer: _buildDrawerPart(context),

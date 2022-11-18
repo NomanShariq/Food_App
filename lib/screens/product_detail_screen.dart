@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'homepage.dart';
+
 class ProductDetailPage extends StatelessWidget {
   const ProductDetailPage({super.key});
 
@@ -11,7 +13,9 @@ class ProductDetailPage extends StatelessWidget {
         elevation: 0.0,
         backgroundColor: Colors.white,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => HomePage()));
+          },
           icon: Icon(
             Icons.arrow_back,
             color: Colors.black,

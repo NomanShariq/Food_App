@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myfood_app/model/featurefood_model.dart';
 import 'package:myfood_app/provider/my_provider.dart';
 import 'package:myfood_app/screens/aboutus.dart';
 import 'package:myfood_app/screens/contact.dart';
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
       CircleAvatar(
         maxRadius: 70,
         backgroundColor: Colors.transparent,
-        backgroundImage: AssetImage("images/$image.png"),
+        backgroundImage: NetworkImage(image!),
       ),
     ]);
   }
@@ -209,37 +210,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildFeaturedPart() {
+    MyProvider myProvider = MyProvider();
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
         height: 260,
         child: Column(children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              height: 240,
-              child: Row(
-                children: [
-                  _buildSingleFeature(
-                      image: "Biryani",
-                      title: "Biryani",
-                      ratings: "4.5",
-                      subtitle: "7 Ocean Hotel",
-                      price: "40"),
-                  _buildSingleFeature(
-                      image: "pastacheese",
-                      title: "Pasta Cheese",
-                      ratings: "5",
-                      subtitle: "5 Star Hotel",
-                      price: "150"),
-                  _buildSingleFeature(
-                      image: "steak",
-                      title: "Steak",
-                      ratings: "4.9",
-                      subtitle: "Jadah Steak Bar",
-                      price: "89"),
-                ],
-              ),
+          Container(
+            height: 240,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: myProvider.getFeatureFoodModelList.length,
+              itemBuilder: (context, index) => _buildSingleFeature(
+                  image: myProvider.getFeatureFoodModelList[index].image,
+                  title: myProvider.getFeatureFoodModelList[index].name,
+                  ratings: myProvider.getFeatureFoodModelList[index].ratings
+                      ,
+                  subtitle: myProvider.getFeatureFoodModelList[index].subtitle,
+                  price: myProvider.getFeatureFoodModelList[index].price
+                      ),
             ),
           ),
         ]),
@@ -263,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                       Container(
+                      Container(
                         height: 240,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
@@ -363,6 +352,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final myProvider = Provider.of<MyProvider>(context);
     myProvider.getCategoryProduct();
+    myProvider.getFeatureFood();
+
     return Scaffold(
       key: _scaffoldstate,
       drawer: _buildDrawerPart(context),

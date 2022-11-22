@@ -2,9 +2,22 @@ import 'package:flutter/material.dart';
 
 import 'homepage.dart';
 
-class ProductDetailPage extends StatelessWidget {
-  const ProductDetailPage({super.key});
+class ProductDetailPage extends StatefulWidget {
+  final String producttitle, productsubtitle, productimage;
+  final String price;
+  ProductDetailPage(
+      {super.key,
+      required this.producttitle,
+      required this.productsubtitle,
+      required this.productimage,
+      required this.price,});
 
+  @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
+
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  int counter = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +27,8 @@ class ProductDetailPage extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => HomePage()));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (ctx) => HomePage()));
           },
           icon: Icon(
             Icons.arrow_back,
@@ -51,13 +65,13 @@ class ProductDetailPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Chicken Broast",
+                                  widget.producttitle,
                                   style: TextStyle(
                                       fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.cyan),
                                 ),
-                                Text("Marine Start Hotel",
+                                Text(widget.productsubtitle,
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.grey,
@@ -78,7 +92,26 @@ class ProductDetailPage extends StatelessWidget {
                                                 BorderRadius.circular(14)),
                                         child: IconButton(
                                           color: Colors.white,
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            if (counter > 0) {
+                                              setState(() {
+                                                counter--;
+                                              });
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content:
+                                                      Text("Cant reduce more"),
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  backgroundColor: Colors.cyan,
+                                                  duration:
+                                                      Duration(seconds: 3),
+                                                ),
+                                              );
+                                            }
+                                          },
                                           icon: Icon(Icons.remove),
                                         ),
                                       ),
@@ -86,7 +119,7 @@ class ProductDetailPage extends StatelessWidget {
                                         width: 5,
                                       ),
                                       Text(
-                                        "0",
+                                        counter.toString(),
                                         style: TextStyle(fontSize: 20),
                                       ),
                                       SizedBox(
@@ -99,7 +132,27 @@ class ProductDetailPage extends StatelessWidget {
                                                 BorderRadius.circular(14)),
                                         child: IconButton(
                                             color: Colors.white,
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              if (counter < 10) {
+                                                setState(() {
+                                                  counter++;
+                                                });
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content:
+                                                        Text("Cant add more"),
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    backgroundColor:
+                                                        Colors.cyan,
+                                                    duration:
+                                                        Duration(seconds: 3),
+                                                  ),
+                                                );
+                                              }
+                                            },
                                             icon: Icon(Icons.add)),
                                       ),
                                     ],
@@ -171,7 +224,7 @@ class ProductDetailPage extends StatelessWidget {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 40.0),
-                                  child: Text("\$28.00",
+                                  child: Text("\$${widget.price}",
                                       style: TextStyle(
                                         fontSize: 20,
                                         color: Colors.grey,
@@ -224,7 +277,7 @@ class ProductDetailPage extends StatelessWidget {
             left: 40,
             child: Image(
               width: 350,
-              image: AssetImage("images/chickenbroast.png"),
+              image: NetworkImage(widget.productimage),
             ))
       ]),
     );

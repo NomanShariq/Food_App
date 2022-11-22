@@ -3,6 +3,7 @@ import 'package:myfood_app/model/featurefood_model.dart';
 import 'package:myfood_app/provider/my_provider.dart';
 import 'package:myfood_app/screens/aboutus.dart';
 import 'package:myfood_app/screens/contact.dart';
+import 'package:myfood_app/screens/product_detail_screen.dart';
 import 'package:myfood_app/screens/profile.dart';
 import 'package:provider/provider.dart';
 
@@ -221,14 +222,24 @@ class _HomePageState extends State<HomePage> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: myProvider.getFeatureFoodModelList.length,
-              itemBuilder: (context, index) => _buildSingleFeature(
-                  image: myProvider.getFeatureFoodModelList[index].image,
-                  title: myProvider.getFeatureFoodModelList[index].name,
-                  ratings: myProvider.getFeatureFoodModelList[index].ratings
-                      ,
-                  subtitle: myProvider.getFeatureFoodModelList[index].subtitle,
-                  price: myProvider.getFeatureFoodModelList[index].price
-                      ),
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (ctx) => ProductDetailPage(
+                        productimage:myProvider.getFeatureFoodModelList[index].image,
+                        producttitle: myProvider.getFeatureFoodModelList[index].name,
+                        productsubtitle: myProvider.getFeatureFoodModelList[index].subtitle,
+                        price: myProvider.getFeatureFoodModelList[index].price,
+                      )));
+                },
+                child: _buildSingleFeature(
+                    image: myProvider.getFeatureFoodModelList[index].image,
+                    title: myProvider.getFeatureFoodModelList[index].name,
+                    ratings: myProvider.getFeatureFoodModelList[index].ratings,
+                    subtitle:
+                        myProvider.getFeatureFoodModelList[index].subtitle,
+                    price: myProvider.getFeatureFoodModelList[index].price),
+              ),
             ),
           ),
         ]),

@@ -44,7 +44,7 @@ class MyProvider with ChangeNotifier {
         featurefoodModel = FeatureFoodModel(
           image: featurefooddata["image"],
           name: featurefooddata["name"],
-          price: featurefooddata["price"].toString(),
+          price: featurefooddata['price'].toString(),
           ratings: featurefooddata['rating'].toString(),
           subtitle: featurefooddata['subtitle'],
         );
